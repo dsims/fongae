@@ -1,0 +1,63 @@
+{% if iscanvas %}
+	{% extends 'canvaslayout.html' %}
+{% else %}
+	{% extends 'layout.html' %}
+{% endif %}
+{% block title %}Friends on Netflix Ratings{% endblock %}
+{% block body %}
+<div id="topic-container">
+
+{% for rating in ratings %}
+<div class="listtopic">
+<div class="embed-mini">
+{% if rating.review %}
+<a href="/title/{{rating.title.slugify()}}/{{rating.title.key().name().replace('http://api.netflix.com/catalog/titles/', '')}}?review={{rating.user.key().name()}}" style="color:black">
+{% else %}
+<a href="/title/{{rating.title.slugify()}}/{{rating.title.key().name().replace('http://api.netflix.com/catalog/titles/', '')}}" style="color:black">
+{% endif %}
+	<div class="url-embed-mini">
+		{% if rating.rating <= 2.5 %}
+		<div style="position: relative; z-index:15;float:right;right:102px;top:5px;background-image:url('/static/images/star-red48.png');background-repeat:no-repeat;width:48px;height:48px;text-align:center;padding-top:15px;">{{ rating.rating_format() }}</div>
+		{% elif rating.rating <= 3.5 %}
+		<div style="position: relative; z-index:15;float:right;right:102px;top:5px;background-image:url('/static/images/star-gold48.png');background-repeat:no-repeat;width:48px;height:48px;text-align:center;padding-top:15px;">{{ rating.rating_format() }}</div>
+		{% elif rating.rating < 5 %}
+		<div style="position: relative; z-index:15;float:right;right:102px;top:5px;background-image:url('/static/images/star-green48.png');background-repeat:no-repeat;width:48px;height:48px;text-align:center;padding-top:15px;">{{ rating.rating_format() }}</div>
+		{% elif rating.rating == 5 %}
+		<div style="position: relative; z-index:15;float:right;right:102px;top:5px;background-image:url('/static/images/star-blue48.png');background-repeat:no-repeat;width:48px;height:48px;text-align:center;padding-top:15px;">{{ rating.rating_format() }}</div>
+		{% endif %}
+		<img class="box-art" src="{{rating.title.box_art}}" style="position: relative; top:-60px;">
+	</div>
+	</a>
+</div>
+
+<div class="avatar"><a href="/profile/{{ rating.user }}">{% if rating.user.twitter_name %}<a href="/profile/{{ rating.user }}"><img src="https://api.twitter.com/1/users/profile_image?screen_name={{rating.user.twitter_name}}"></a>{% elif rating.user.facebook_id %}<img src="https://graph.facebook.com/{{rating.user.facebook_id}}/picture?type=square">{% else %}{% endif %}</a></div>
+<div class="title">
+{% if rating.review %}
+<a href="/title/{{rating.title.slugify()}}/{{rating.title.key().name().replace('http://api.netflix.com/catalog/titles/', '')}}?review={{rating.user.key().name()}}" style="color:black">
+{% else %}
+<a href="/title/{{rating.title.slugify()}}/{{rating.title.key().name().replace('http://api.netflix.com/catalog/titles/', '')}}" style="color:black">
+{% endif %}
+{{ rating.title.title }} - {{ rating.rating_format() }} star{% if rating.review %} review{% else %}s{% endif %}
+</a>
+</div>
+
+<div class="topicinfo">
+<div class="date">
+	<span style="color:black;">{{ rating.submitted_format() }}</span>
+	by <a href="/profile/{{ rating.user }}"><span style="color:black;">{{ rating.user }}</a></span>
+</div>
+</div>
+
+<div class="topicarea" style="color:#A9A9A9;">
+<div class="body" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-height:30px;width:640px;">{% if rating.review %}{{ rating.review }}{% endif %}</div>
+</div>
+<div class="bodyfade"><img src="/static/content/images/fade.png" alt="" /></div>
+
+</div>
+<div class="bottomline"></div>
+
+{% endfor %}
+
+</div>
+{% endblock %}
+

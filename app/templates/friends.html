@@ -1,0 +1,63 @@
+{% if iscanvas %}
+	{% extends 'canvaslayout.html' %}
+{% else %}
+	{% extends 'layout.html' %}
+{% endif %}
+{% block title %}Friends on Netflix{% endblock %}
+{% block body %}
+<h1>Your friend's recent ratings</h1>
+<div id="topic-container">
+{% for friend in friends %}
+<div class="listtopic"> 
+<div class="avatar" style="padding:right:50px"><a href="/profile/{{ friend.username }}">{% if friend.twitter_name %}<a href="/profile/{{ friend.username }}"><img src="https://api.twitter.com/1/users/profile_image?screen_name={{friend.twitter_name}}"></a>{% elif friend.facebook_id %}<img src="https://graph.facebook.com/{{friend.facebook_id}}/picture?type=square">{% else %}{% endif %}</a></div>
+{% for rating in friend.ratings.order('-__key__').fetch(3) %}
+<div class="title">
+{% if rating.review %}
+<a href="/title/{{rating.title.slugify()}}/{{rating.title.key().name().replace('http://api.netflix.com/catalog/titles/', '')}}?review={{rating.user.key().name()}}" style="color:black">
+{% else %}
+<a href="/title/{{rating.title.slugify()}}/{{rating.title.key().name().replace('http://api.netflix.com/catalog/titles/', '')}}" style="color:black">
+{% endif %}
+{{ rating.title.title }} - {{ rating.rating_format() }} star{% if rating.review %} review{% else %}s{% endif %}
+</a>
+</div>
+{% endfor %}
+<div class="topicinfo">
+<div class="date">
+	<span style="color:black;">{% if friend.ratings.get() %}{{ friend.ratings.order('-__key__').get().created_format() }}{% else %}None{% endif %}</span>
+	by <a href="/profile/{{ friend.username }}"><span style="color:black;">{{ friend.username }}</a></span>
+</div>
+</div>
+</div>
+{% endfor %}
+
+{% if friends|length < 5 %}
+<div class="listtopic">
+<div class="title" style="text-align:center">Ask your friends to sign up so you can see more ratings!
+<br/><br/>
+<table style="margin-left:auto; margin-right:auto;text-align:center;"><tr>
+<td style="width:33%;background-color:#3B5998;">
+<fb:like href="http://www.facebook.com/apps/application.php?id=164386283595172" send="true" layout="button_count" show_faces="false" action="like" font=""></fb:like>
+</td><td style="width:33%;background-color:#4099FF;">
+<a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.friendsonnetflix.com" data-count="none" data-text="Use Netflix?  Share your ratings with me at" data-related="FriendsOnNFLX">Tweet</a>
+</td>
+<td style="width:33%;background-color:#0266C8;">
+<!-- Place this tag where you want the +1 button to render -->
+<g:plusone href="http://www.friendsonnetflix.com"></g:plusone>
+<!--  Place this tag after the last plusone tag -->
+<script type="text/javascript">
+  (function() {
+    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+    po.src = 'https://apis.google.com/js/plusone.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+  })();
+</script>
+</td></tr></table>
+</div>
+</div>
+{% endif %}
+
+
+</div>
+
+{% endblock %}
+

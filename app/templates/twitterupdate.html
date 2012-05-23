@@ -1,0 +1,44 @@
+{% extends 'layout.html' %}
+
+{% block title %}Twitter Update{% endblock %}
+
+{% block body %}
+    <h1>Twitter Results</h1>
+	<p>
+		You were already connected to {{alreadyfriends}} Twitter friends here.
+	</p>
+	{% if newfriendscount > 0 %}
+    <p>
+		and we found {{newfriendscount}} new friends just now:
+		<ul>
+			{% for friend in newfriends %}
+			<li><a href="/profile/{{ friend }}">{{ friend }}</a></li>
+			{% endfor %}
+		</ul>
+    </p>
+	{% endif %}
+	{% if missingcount > 0 %}
+	<p>Sadly, {{missingcount}} were not found.  You should <a target="_target" href="http://twitter.com/share?url=http%3A%2F%2Fwww.friendsonnetflix.com%2Fprofile%2F{{current_user.username}}&text=See%20my%20Netflix%20movie%20ratings%20and%20share%20your%20own%20%40FriendsOnNFLX ">ask them to join</a>!  (If your friends join later, you will automatically follow them.)</p>
+	{% endif %}
+		{% if not current_user.has_netflix %}
+			<p>
+		Don't forget to <a href="{{ url_for('auth/netflix') }}">connect your Netflix</a> account too so we can import your ratings and reviews!
+		    </p>
+		{% endif %}
+	<h2>Settings</h2>
+	Auto-tweet my ratings and/or reviews:<br />
+	<p>
+	<form method="post" action="{{ current_url }}" enctype="multipart/form-data" class="tipfy-form">
+	<input type="checkbox" name="sharereviews" {% if sharereviews %} checked {% endif %}> Reviews <br />
+	<input type="checkbox" name="share5" {% if share5 %} checked {% endif %}> "Loved" (5 star) <br />
+	<input type="checkbox" name="share4" {% if share4 %} checked {% endif %}> "Liked" (4 star) <br />
+	<input type="checkbox" name="share3" {% if share3 %} checked {% endif %}> "Thought was OK" (3 star) <br />
+	<input type="checkbox" name="share2" {% if share2 %} checked {% endif %}> "Didn't like" (2 star) <br />
+	<input type="checkbox" name="share1" {% if share1 %} checked {% endif %}> "Hated" (1 star)<br />
+	<input type="submit"/>
+	</form>
+	</p>
+			(Don't worry, we won't flood your stream if you go on a rating binge)
+
+{% endblock %}
+

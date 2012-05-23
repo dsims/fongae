@@ -1,0 +1,32 @@
+{% if iscanvas %}
+	{% extends 'canvaslayout.html' %}
+{% else %}
+	{% extends 'layout.html' %}
+{% endif %}
+{% block title %}Signup{% endblock %}
+{% from '_form_macros.html' import form_field %}
+
+{% block body %}
+    <h1>Signup</h1>
+	<p>Ok!  Your account is almost created!  All you need to do now is tell us what nickname you want to use.</p>
+    <form method="post" action="{{ current_url }}" enctype="multipart/form-data" class="tipfy-form">
+        <ol>
+            <li>{{ form_field(form.nickname, class='medium') }}</li>
+        </ol>
+        <fieldset class="submit">
+            <input type="submit" name="Submit" value="{{ _('Save') }}">
+        </fieldset>
+    </form>
+	<br />
+	<p>
+		{% if service == "twitter" %}
+		When you click Save, your FriendsOnNetflix account will be created and we will attempt to find your Twitter friends.
+		{% elif service == "facebook" %}
+		When you click Save, your FriendsOnNetflix account will be created and we will attempt to find your Facebook friends.
+		{% elif service == "netflix" %}
+		When you click Save, your FriendsOnNetflix account will be created and we will import your Netflix ratings and reviews.  It might take a while depending on how much history you have.
+		{% endif %}
+	</p>
+	<p>If you already have a FriendsOnNetflix account you should sign-out, sign-in with the service you first used, and then try connecting {{ service }} again.
+{% endblock %}
+

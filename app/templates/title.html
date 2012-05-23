@@ -1,0 +1,149 @@
+{% if iscanvas %}
+	{% extends 'canvaslayout.html' %}
+{% else %}
+	{% extends 'layout.html' %}
+{% endif %}
+{% block title %}{{title.title}} ({{title.release_year}}) - Netflix Ratings and Reviews{% endblock %}
+{% block meta %}
+
+<meta property="og:title" content="{{title.title|escape}}"/>
+<meta property="og:type" content="{{title_type}}"/>
+<meta property="og:url" content="http://www.friendsonnetflix.com/title/{{title.slugify()}}/{{title.key().name().replace('http://api.netflix.com/catalog/titles/', '')}}"/>
+<meta property="og:image" content="{{title.box_art}}"/>
+<meta property="og:site_name" content="Friends on Netflix"/>
+<meta property="fb:app_id" content="164386283595172"/>
+<meta property="og:description" content="{{synopsisFormatedNoLinks|escape}}"/>
+{% if title.traileraddict_id %}
+<meta property="og:video" content="http://www.traileraddict.com/emd/{{title.traileraddict_id}}" />
+<meta property="og:video:height" content="400" />
+<meta property="og:video:width" content="520" />
+<meta property="og:video:type" content="application/x-shockwave-flash" />
+{% endif %}
+
+{% endblock %}
+{% block body %}
+<div style="float:left;width:215px;min-height:290px">
+	<div style="border:solid grey"><img src="{{title.big_box_art()}}"></div>
+</div>
+<div style="float:right;width:150;text-align:center">
+    <script src="http://jsapi.netflix.com/us/api/w/s/sp100.js" settings="id=http://movi.es/{{title.ODataId}}&w=150&h=anif"></script>
+	<br />
+	{%if title.traileraddict_id %}
+		<a id="trailerbutton" href="http://www.traileraddict.com/trailer/{{title.slugify('-')}}/trailer" target="_target"><img src="/static/images/playtrailer.png" style="" title="View Trailer"></a><br />
+		<script>
+			$('#trailerbutton').click(function(){
+                $('#soundtrackflash').hide();
+				$('<div style="padding:20px"><object width="520" height="278"><param name="movie" value="http://www.traileraddict.com/emd/{{title.traileraddict_id}}"></param><param name="allowscriptaccess" value="always"></param><param name="wmode" value="transparent"></param><param name="allowfullscreen" value="true"></param><embed src="http://www.traileraddict.com/emd/{{title.traileraddict_id}}" type="application/x-shockwave-flash" wmode="transparent" allowfullscreen="true" allowscriptaccess="always" width="520" height="278"></embed></object></div>').dialog(
+				{
+					title: "{{title.title}} Trailer",
+					modal: true,
+					width:600,
+					minWidth:600,
+					height:360,
+					minHeight:400,
+					autoOpen: true,
+					resizable: false,
+					close: function() {
+					 $('#soundtrackflash').show();
+					}
+				});
+				return false;
+			});
+		</script>
+	{% endif %}
+	
+	<a href="http://www.amazon.com/gp/search?index=movies-tv&tag=fonn-20&linkCode=qs&keywords={{title.title}}" id="static_txt_preview" target="_target"><img src="/static/images/buy.png" style="" title="Buy from Amazon.com"></a><img src="http://www.assoc-amazon.com/e/ir?t=fonn-20&l=as2&o=1&a={{title.ASIN}}" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /><br />
+	{%if title.ASIN %}
+		<!-- <a href="http://www.amazon.com/gp/product/{{title.ASIN}}?ie=UTF8&tag=fonn-20&linkCode=as2&camp=1789&creative=9325&creativeASIN={{title.ASIN}}" id="static_txt_preview" target="_target"><img src="/static/images/buy.png" style="" title="Buy from Amazon.com"></a><img src="http://www.assoc-amazon.com/e/ir?t=fonn-20&l=as2&o=1&a={{title.ASIN}}" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /><br />-->
+	{% endif %}
+	
+	{% if current_user and yourrating %}Your Rating: <b>{{yourrating.rating}}</b>/5<br />{% endif %}
+	<a href="http://www.netflix.com/Movie/{{title.slugify('_')}}/{{title.title_id_num}}" target="_target">Avg. Rating:</a> <b>{{title.average_rating}}</b>/5<br />
+	{%if title.metacritic_rating %}<a href="http://www.metacritic.com/movie/{{title.slugify('-')}}" target="_target">Metacritic:</a> <b>{{title.metacritic_rating}}</b>/100<br />{% endif %}
+	{% if title.soundtrackASIN %}
+<a href="http://www.amazon.com/gp/product/{{title.soundtrackASIN}}?ie=UTF8&tag=fonn-20&linkCode=as2&camp=1789&creative=9325&creativeASIN={{title.soundtrackASIN}}" id="static_txt_preview" target="_target">Soundtrack:</a><img src="http://www.assoc-amazon.com/e/ir?t=fonn-20&l=as2&o=1&a={{title.soundtrackASIN}}" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /><br />
+{% endif %}
+<div id="soundtrackflash" style="height:90px">
+{% if title.soundtrackASIN %}
+<script type='text/javascript'>
+var amzn_wdgt={widget:'MP3Clips'};
+amzn_wdgt.tag='fonn-20';
+amzn_wdgt.widgetType='ASINList';
+amzn_wdgt.ASIN='{{title.soundtrackASIN}}';
+amzn_wdgt.title='Soundtrack';
+amzn_wdgt.width='120';
+amzn_wdgt.height='90';
+amzn_wdgt.shuffleTracks='False';
+amzn_wdgt.marketPlace='US';
+</script>
+<script type='text/javascript' src='http://wms.assoc-amazon.com/20070822/US/js/swfobject_1_5.js'>
+</script>
+{% endif %}
+</div>
+
+</div>
+<div style="min-height:275px;margin-left:225px;margin-right:160px">
+	<h1 style="margin:0px">{{title.title}}</h1>
+	<table><tr><td width="100"><h3>{{title.release_year}} <span style="background:black;color:white;padding:0px 2px 0px 2px">{{title.rating}}</span></h3></td><td><fb:like href="http://www.friendsonnetflix.com/title/{{title.slugify()}}/{{title.key().name().replace('http://api.netflix.com/catalog/titles/', '')}}" send="true" layout="button_count" show_faces="true" action="like" font="" ></fb:like></td></tr></table>
+	<p class="synopsis">{% if iscanvas %}{{synopsisFormatedNoLinks}}{% else %}{{synopsisFormated}}{% endif %}</p>
+</div>
+</div>
+
+<div id="topic-container">
+{% for rating in ratings %}
+{% if loop.first or rating.user.key().name() != reviewuser %}
+ 
+<div class="listtopic">
+<div class="embed-mini">
+	<div class="url-embed-minix">
+        {% if rating.review %} <a href="?review={{rating.user.key().name()}}" style="color:black"> {% endif %}
+        
+		{% if rating.rating <= 2.5 %}
+		<div style="position: relative; z-index:15;float:right;right:28px;top:5px;background-image:url('/static/images/star-red48.png');background-repeat:no-repeat;width:48px;height:48px;text-align:center;padding-top:15px;">{{ rating.rating_format() }}</div>
+		{% elif rating.rating <= 3.5 %}
+		<div style="position: relative; z-index:15;float:right;right:28px;top:5px;background-image:url('/static/images/star-gold48.png');background-repeat:no-repeat;width:48px;height:48px;text-align:center;padding-top:15px;">{{ rating.rating_format() }}</div>
+		{% elif rating.rating < 5 %}
+		<div style="position: relative; z-index:15;float:right;right:28px;top:5px;background-image:url('/static/images/star-green48.png');background-repeat:no-repeat;width:48px;height:48px;text-align:center;padding-top:15px;">{{ rating.rating_format() }}</div>
+		{% elif rating.rating == 5 %}
+		<div style="position: relative; z-index:15;float:right;right:28px;top:5px;background-image:url('/static/images/star-blue48.png');background-repeat:no-repeat;width:48px;height:48px;text-align:center;padding-top:15px;">{{ rating.rating_format() }}</div>
+		{% endif %}        
+		
+        {% if rating.review %} </a> {% endif %}
+	</div>
+</div>
+
+<div class="avatar" style="padding:right:50px"><a href="/profile/{{ rating.user }}">{% if rating.user.twitter_name %}<img src="https://api.twitter.com/1/users/profile_image?screen_name={{rating.user.twitter_name}}">{% elif rating.user.facebook_id %}<img src="https://graph.facebook.com/{{rating.user.facebook_id}}/picture?type=square">{% else %}{% endif %}</a></div>
+<div class="title">
+	{% if rating.review %} <a href="?review={{rating.user.key().name()}}"> {% endif %}
+{{ rating.rating_format() }} star{% if rating.review %} review{% else %}s{% endif %}
+    {% if rating.review %} </a> {% endif %}
+</div>
+
+<div class="topicinfo">
+<div class="date">
+	Rated <span style="color:black;">{{ rating.submitted_format() }}</span>
+	by <a href="/profile/{{ rating.user }}"><span style="color:black;">{{ rating.user }}</span></a>
+</div>
+</div>
+
+<div class="topicarea">
+<div class="body">{% if rating.review %}{{ rating.review }}{% endif %}</div>
+</div>
+
+</div>
+<div class="bottomline"></div>
+
+{% endif %}
+{% endfor %}
+
+{% if ratings|length == 0 %}
+<div class="listtopic">
+<div class="title" style="text-align:center">Be the first of your friends to rate this!</div>
+</div>
+{% endif %}
+
+</div>
+
+<div>
+{% endblock %}
+

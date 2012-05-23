@@ -1,0 +1,123 @@
+{% if iscanvas %}
+	{% extends 'canvaslayout.html' %}
+{% else %}
+	{% extends 'layout.html' %}
+{% endif %}
+{% block title %}{{user.username}} - Friends on Netflix profile{% endblock %}
+{% block body %}
+<div style="float:right">
+	<div>
+
+	<div class="date">
+	{{numfollowers-1}} followers
+	{% if current_user and not isfollowing %}
+	<span id="follow" style="cursor:pointer;color:#6666FF">[Follow]</span>
+	<script>
+	$('span#follow').click(function(){
+		var dialogtitle = "New friend?";
+		var dialogbuttons = {
+			"Cancel": function() { $(this).dialog("close"); },
+			"Follow": function(){$.post("/newfriend",{to_user:'{{ user.key().name() }}'});$(this).dialog("close");$("span#follow").hide();}
+		};
+		$('<div style="text-align:left">Are you sure you want to follow this person?</div>').dialog(
+		{
+			title: dialogtitle,
+			modal: true,
+			width:400,
+			height:200,
+			autoOpen: true,
+			buttons: dialogbuttons
+		});
+	});
+	 </script>
+	{% endif %}
+
+	</div>
+
+	{% if user.twitter_name %}<a href="http://twitter.com/{{user.twitter_name}}" target="_target"><img src="/static/images/twitter.png" width="60" height="60" alt="Twitter"></a>{% endif %}
+	{% if user.facebook_id %}<a href="http://facebook.com/profile.php?id={{user.facebook_id}}" target="_target"><img src="/static/images/facebook.png" width="60" height="60" alt="Facebook"></a>{% endif %}
+
+	</div>
+
+</div>
+<div class="avatar">{% if user.twitter_name %}<img src="https://api.twitter.com/1/users/profile_image?screen_name={{user.twitter_name}}">{% elif user.facebook_id %}<img src="https://graph.facebook.com/{{user.facebook_id}}/picture?type=square">{% else %}{% endif %}</div> <h1>{{user.username}}
+</h1>
+
+
+</div>
+{% if current_user == user %}
+<a class="downloadlink" href="/ratings/download">Download</a>
+{% endif %}
+<div id="tab{{ tab }}">
+	<ul id="tabnav">
+		<li class="tab1"><a href="/profile/{{ user.username }}">Ratings ({{ user.rating_count }})</a></li>
+		<li class="tab2"><a href="/profile/{{ user.username }}?show=favorites">Favorites</a></li>
+		<li class="tab3"><a href="/profile/{{ user.username }}?show=hated">Hated</a></li>
+		<li class="tab4"><a href="/profile/{{ user.username }}?show=reviews">Reviews ({{ user.review_count }})</a></li>
+	</ul>
+</div>
+
+<div id="topic-container">
+{% for rating in ratings %}
+<div class="listtopic">
+<div class="embed-mini">
+{% if rating.review %}
+<a href="/title/{{rating.title.slugify()}}/{{rating.title.key().name().replace('http://api.netflix.com/catalog/titles/', '')}}?review={{user.key().name()}}" style="color:black">
+{% else %}
+<a href="/title/{{rating.title.slugify()}}/{{rating.title.key().name().replace('http://api.netflix.com/catalog/titles/', '')}}" style="color:black">
+{% endif %}
+	<div class="url-embed-mini">
+		{% if rating.rating <= 2.5 %}
+		<div style="position: relative; z-index:15;float:right;right:102px;top:5px;background-image:url('/static/images/star-red48.png');background-repeat:no-repeat;width:48px;height:48px;text-align:center;padding-top:15px;">{{ rating.rating_format() }}</div>
+		{% elif rating.rating <= 3.5 %}
+		<div style="position: relative; z-index:15;float:right;right:102px;top:5px;background-image:url('/static/images/star-gold48.png');background-repeat:no-repeat;width:48px;height:48px;text-align:center;padding-top:15px;">{{ rating.rating_format() }}</div>
+		{% elif rating.rating < 5 %}
+		<div style="position: relative; z-index:15;float:right;right:102px;top:5px;background-image:url('/static/images/star-green48.png');background-repeat:no-repeat;width:48px;height:48px;text-align:center;padding-top:15px;">{{ rating.rating_format() }}</div>
+		{% elif rating.rating == 5 %}
+		<div style="position: relative; z-index:15;float:right;right:102px;top:5px;background-image:url('/static/images/star-blue48.png');background-repeat:no-repeat;width:48px;height:48px;text-align:center;padding-top:15px;">{{ rating.rating_format() }}</div>
+		{% endif %}
+		<img class="box-art" src="{{rating.title.box_art}}" style="position: relative; top:-60px;">
+	</div>
+	</a>
+</div>
+
+<div class="title">
+{% if rating.review %}
+<a href="/title/{{rating.title.slugify()}}/{{rating.title.key().name().replace('http://api.netflix.com/catalog/titles/', '')}}?review={{rating.user.key().name()}}" style="color:black">
+{% else %}
+<a href="/title/{{rating.title.slugify()}}/{{rating.title.key().name().replace('http://api.netflix.com/catalog/titles/', '')}}" style="color:black">
+{% endif %}
+{{ rating.title.title }}
+{% if tab != 2 and tab != 3 %}
+ - {{ rating.rating_format() }} star{% if rating.review %} review{% else %}s{% endif %}
+{% endif %}
+</a>
+</div>
+
+<div class="topicinfo">
+<div class="date">
+	<span style="color:black;">{{ rating.submitted_format() }}</span>
+</div>
+</div>
+
+<div class="topicarea" style="color:#A9A9A9;">
+<div class="body" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-height:30px;width:640px;">{% if rating.review %}{{ rating.review }}{% endif %}</div>
+</div>
+<div class="bodyfade"><img src="/static/content/images/fade.png" alt="" /></div>
+
+</div>
+<div class="bottomline"></div>
+
+{% endfor %}
+
+{% if ratings|length == 0 %}
+<div class="listtopic">
+<div class="title" style="text-align:center">Nothing found :(</div>
+</div>
+{% endif %}
+
+</div>
+
+<div>
+{% endblock %}
+

@@ -1,0 +1,23 @@
+{% if iscanvas %}
+	{% extends 'canvaslayout.html' %}
+{% else %}
+	{% extends 'layout.html' %}
+{% endif %}
+{% block title %}Netflix Update{% endblock %}
+{% block body %}
+    <h1>Netflix Update</h1>
+
+    <p>{% if ratings < 500 %}
+		Found {{ratings}} ratings.  It might take a minute before they appear on <a href="/profile/{{ current_user.username }}">your profile</a>.
+		{{ results }}
+		{% else %}
+		Wow, you've seen {{ratings}} movies!  It could take about 15 minutes before your ratings appear on <a href="/profile/{{ current_user.username }}">your profile</a>.
+		{{ results }}
+		{% endif %}
+	</p><p>
+		{% if not current_user.twitter_name and not current_user.facebook_id %}
+		You should connect your Twitter and Facebook accounts now so you can view your friend's ratings!
+		{% endif %}
+    </p>
+{% endblock %}
+

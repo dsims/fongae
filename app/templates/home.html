@@ -1,0 +1,25 @@
+{% if iscanvas %}
+	{% include 'canvaslanding.html' %}
+{% else %}
+{% extends 'layout.html' %}
+
+{% block title %}Friends on Netflix{% endblock %}
+{% block body %}
+
+<div>
+<div style="float:right;width:500px;padding-right:50px">
+
+<h2 style="font-size:2em">See your friend's ratings and reviews. Backup and share your own!</h2>
+<h3>Begin by <a href="{{ url_for('auth/login') }}">connecting</a> your Netflix, Twitter, or Facebook accounts.</h3>
+<p>Just a few clicks and you're done.  Then you can explore your friend's ratings to find new movies and shows to watch.  We will automatically keep your ratings here updated.  You can even auto-post your favorite (or most hated) movies to Twitter and Facebook.</p>
+
+</div>
+	<div style="width:250px;">
+<a href="{{ url_for('auth/login') }}"><img src="/static/images/FonN_icons.png" width="241" title="Sign-In with Netflix, Facebook, or Twitter"></a>
+<br />
+	</div>
+</div>
+
+{% endblock %}
+
+{% endif %}

@@ -1,0 +1,9 @@
+{% if iscanvas %}
+	{% extends 'canvaslayout.html' %}
+{% else %}
+	{% extends 'layout.html' %}
+{% endif %}
+{% block title %}Something isn't working{% endblock %}
+{% block body %}
+		{{ results }}
+{% endblock %}

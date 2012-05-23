@@ -1,0 +1,177 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml" xmlns:og="http://ogp.me/ns#">
+<head>
+	<title>{% block title %}{% endblock %}</title>
+	{% block meta %}{% endblock %}
+
+<style type="text/css">
+/*margin and padding on body element
+  can introduce errors in determining
+  element position and are not recommended;
+  we turn them off as a foundation for YUI
+  CSS treatments. */
+body {
+	margin:0;
+	padding:0;
+}
+</style>
+
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.6.0/build/reset-fonts-grids/reset-fonts-grids.css" />
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.6.0/build/base/base-min.css" />
+<link rel="stylesheet" type="text/css" href="/static/styles/screen.css" />
+<link rel="stylesheet" type="text/css" href="/static/content/style-new.css" />
+<link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/themes/blitzer/jquery-ui.css" />
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-CODE']);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</head>
+<body class="yui-skin-sam">
+<div id="fb-root"></div>
+<script>
+  window.fbAsyncInit = function() {
+    FB.init({appId: '164386283595172', status: true, cookie: true, xfbml: true});
+  };
+  (function() {
+    var e = document.createElement('script'); e.async = true;
+    e.src = document.location.protocol +
+      '//connect.facebook.net/en_US/all.js';
+    document.getElementById('fb-root').appendChild(e);
+  }());
+</script>
+<div id="doc2" class="yui-t4">
+<div id="hd">
+	<div style="float:right;padding-right:10px;">
+	<form method="get" action="{{ url_for('title/lookup') }}" enctype="multipart/form-data">
+		<input type="text" name="q" class='medium'>
+	</form>
+	</div>
+	<h1><a href="{{ url_for('home') }}" style="color:white">friends on netflix</a></h1>
+		<div class="navigation">
+			<div class="navigationbg">
+				<div style="float:right;padding:8px;">
+					                    <p>{% if current_user or auth_session -%}
+                        {% if current_user -%}
+                            Signed in as <a href="/profile/{{ current_user.username }}"><span class="user_email">{{ current_user.username|e }}</span></a> |
+                        {%- endif %} 
+                        {% if not current_user -%}
+                            You need to finish <a href="{{ url_for('auth/signup') }}">Sign Up</a>! ... or
+                        {%- endif %}
+						<a href="{{ url_for('auth/logout') }}">Sign out</a>
+                    {% else %}
+                        Hi, there. <a href="{{ login_url }}">Sign in</a>
+                    {% endif %}</p>
+				</div>
+				<div class="navinside">
+					<div class="user-status">
+                        <span class="active"><a href="{{ url_for('ratings/index') }}"><span style="">Ratings</span></a></span> -
+						{% if current_user %}
+							{% if not current_user.has_netflix %}
+								<span><a href="{{ url_for('auth/netflix') }}">Connect Netflix</a></span> -
+							{% endif %}
+							{% if current_user.twitter_name %}
+								<span><a href="{{ url_for('settings/twitter') }}">Twitter Settings</a></span> -
+							{% else %}
+								<span><a id="twitterconnect" href="{{ url_for('auth/twitter') }}">Connect Twitter</a></span> -
+							{%- endif %}
+							{% if current_user.facebook_id -%}
+								<span><a href="{{ url_for('settings/facebook') }}">Facebook Settings</a></span> - 
+							{%- else %}
+								<span><a id="facebookconnect" href="{{ url_for('auth/facebook') }}">Connect Facebook</a></span> -
+							{%- endif %}
+						{%- endif %}
+						<span><a href="{{ url_for('faq') }}">FAQs</a></span> -
+						<span><a href="http://blog.friendsonnetflix.com">Blog</a></span>
+					</div>
+				</div>
+				<script>
+					$('#twitterconnect').click(function(){
+					var dialogbuttons = {
+						"Cancel": function() { $(this).dialog("close"); },
+						"OK": function(){window.location.href = "{{ url_for('auth/twitter') }}"; }
+					};
+					$('<div style="text-align:left">Connecting Twitter to FriendsOnNetflix allows you to:\n\
+						<ul><li>Follow your Twitter friends here.</li><li>When your friends join, they can easily follow you.</li><li>Use your Twitter avatar here.</li><li>Sign in by clicking the Twitter icon.</li><li>Optionally auto-tweet your ratings and reviews.</li>\n\
+						</ul></div>').dialog(
+					{
+						title: "Connect Twitter?",
+						modal: true,
+						width:480,
+						height:250,
+						autoOpen: true,
+						buttons: dialogbuttons
+					});
+					return false;
+				});
+				$('#facebookconnect').click(function(){
+					var dialogtitle = "Connect Facebook?";
+					var dialogbuttons = {
+						"Cancel": function() { $(this).dialog("close"); },
+						"OK": function(){window.location.href = "{{ url_for('auth/facebook') }}"; }
+					};
+					$('<div style="text-align:left">Connecting Facebook to FriendsOnNetflix allows you to:\n\
+						<ul><li>Follow your Facebook friends here.</li><li>When your friends join, they can easily follow you.</li><li>Use your Facebook profile pic here.</li><li>Sign in by clicking the Facebook icon.</li><li>Optionally auto-post your ratings and reviews.</li>\n\
+						</ul></div>').dialog(
+					{
+						title: dialogtitle,
+						modal: true,
+						width:480,
+						height:250,
+						autoOpen: true,
+						buttons: dialogbuttons
+					});
+					return false;
+				});
+				 </script>
+			</div>
+		</div>
+</div>
+<div id="bd" style="margin:10px 30px 0px">
+					<div id="fullbody">
+
+						{% block body %}
+                        {% endblock %}
+
+					</div>
+	<div style="text-align:center;color:white">
+        <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.friendsonnetflix.com" data-text="See your friends' Netflix ratings and share your own!" data-count="none" data-via="FriendsOnNFLX">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+        <iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.facebook.com%2Fapps%2Fapplication.php%3Fid%3D164386283595172&amp;layout=button_count&amp;show_faces=false&amp;width=50&amp;action=like&amp;colorscheme=light&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:80px; height:21px;" allowTransparency="true"></iframe>
+        <br />FriendsOnNetflix created by <a href="/profile/dsims" style="color:white;text-decoration: underline">dsims</a><br />Please email feedback and questions to "support AT friendsonnetflix.com"<br />
+    </div>
+</div>
+<div id="ft" style="padding-top:20px;text-align:center"><a href="http://www.netflix.com"><img alt="delivered by Netflix" src="/static/images/delivered-by-netflix.png"></a></div>
+
+</div>
+
+        {%- block body_extra %}
+            <script src="/static/scripts/scripts.js"></script>
+
+            {%- block messages -%}
+                <script>
+                tipfy.instances = {};
+                tipfy.instances.messages = new tipfy.ui.Messages('tipfy-messages');
+                {% if messages %}
+                tipfy.instances.messages.addMessages({{ messages }});
+                {% endif %}
+                </script>
+            {%- endblock -%}
+        {% endblock %}
+
+		<!--
+		<script>jQuery.noConflict(true)</script>
+		<script type="text/javascript" src="http://www.assoc-amazon.com/s/link-enhancer?tag=fonn-20&o=1"></script>
+		<noscript>
+			<img src="http://www.assoc-amazon.com/s/noscript?tag=fonn-20" alt="" />
+		</noscript>
+		-->
+
+</body>
+</html>

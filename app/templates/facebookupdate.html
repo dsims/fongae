@@ -1,0 +1,34 @@
+{% if iscanvas %}
+	{% extends 'canvaslayout.html' %}
+{% else %}
+	{% extends 'layout.html' %}
+{% endif %}
+
+{% block title %}Facebook Update{% endblock %}
+
+{% block body %}
+    <h1>Congrats!  You have friends!</h1>
+	<p>
+		You had {{alreadyfriends}} Facebook friends here
+	</p>
+	{% if newfriendscount > 0 %}
+    <p>
+		and we found {{newfriendscount}} more just now:
+		<ul>
+			{% for friend in newfriends %}
+			<li><a href="/profile/{{ friend }}">{{ friend }}</a></li>
+			{% endfor %}
+		</ul>
+    </p>
+	{% endif %}
+	{% if missingcount > 0 %}
+	<p>You should <a target="_blank" href="http://www.facebook.com/sharer.php?t=See%20my%20Netflix%20movie%20ratings%20and%20share%20your%20own!&u=http%3A%2F%2Fwww.friendsonnetflix.com%2Fprofile%2F{{current_user}}">ask more to join</a>!</p>
+	{% endif %}
+		{% if not current_user.has_netflix %}
+			<p>
+		Don't forget to connect your Netflix account too so we can import your ratings!
+		    </p>
+		{% endif %}
+
+{% endblock %}
+

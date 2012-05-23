@@ -1,0 +1,48 @@
+{% if iscanvas %}
+	{% extends 'canvaslayout.html' %}
+{% else %}
+	{% extends 'layout.html' %}
+{% endif %}
+
+{% block title %}Facebook Settings{% endblock %}
+
+{% block body %}
+		{% if not current_user.has_netflix %}
+			<p>
+		Make sure to connect your Netflix account so we can import your ratings and reviews!
+		    </p>
+		{% endif %}
+
+{% if not haspermissions %}		
+<p>	Before you can change these settings, you must first   
+<a href="http://www.facebook.com/dialog/oauth?scope=publish_stream,offline_access&client_id={{app_id}}&redirect_uri={{canvas_url}}&response_type=token">allow us to post to your wall</a>.
+</p>
+{% endif %}
+		
+	<h2>Facebook Settings</h2>
+
+	Auto-post my ratings and/or reviews:<br />
+	<p>
+	<form method="post" name="fbsettings" action="{{ current_url }}" enctype="multipart/form-data" class="tipfy-form">
+	<input type="checkbox" name="sharereviews" {% if sharereviews %} checked {% endif %}> Reviews <br />
+	<input type="checkbox" name="share5" {% if share5 %} checked {% endif %}> "Loved" (5 star) <br />
+	<input type="checkbox" name="share4" {% if share4 %} checked {% endif %}> "Liked" (4 star) <br />
+	<input type="checkbox" name="share3" {% if share3 %} checked {% endif %}> "Thought was OK" (3 star) <br />
+	<input type="checkbox" name="share2" {% if share2 %} checked {% endif %}> "Didn't like" (2 star) <br />
+	<input type="checkbox" name="share1" {% if share1 %} checked {% endif %}> "Hated" (1 star)<br />
+	<input type="submit" value="Save Settings"/>
+	</form>
+	</p>
+			(Don't worry, we won't flood your wall if you go on a rating binge)
+
+{% if not haspermissions %}
+<script>
+for( var elem, i = 0; ( elem = document.fbsettings.elements[i] ); i++ )
+{ 
+	elem.disabled = true ; 
+}
+</script>
+{%endif%}
+
+{% endblock %}
+

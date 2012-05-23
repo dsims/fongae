@@ -1,0 +1,5 @@
+cron:
+- description: netflix update
+  url: /cron/netflixupdate
+  schedule: every 60 minutes
+  target: netflixupdate

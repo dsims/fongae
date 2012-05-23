@@ -1,0 +1,11 @@
+Friends On Neflix on Google App Engine
+
+Currently running at http://www.friendsonnetflix.com until ported off GAE.
+
+Functions both as stand-alone site and as Facebook canvas app.
+Authenticate via Netflix, Twitter, and/or Facebook.
+Also fetches data from other APIs like Amazon ECS.
+
+Uses GAE datastore, task queues, memcached, cron, and backends
+
+Dependencies: Tipfy framework http://www.tipfy.org/

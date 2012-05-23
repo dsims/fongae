@@ -1,0 +1,41 @@
+{% if iscanvas %}
+	{% extends 'canvaslayout.html' %}
+{% else %}
+	{% extends 'layout.html' %}
+{% endif %}
+
+{% block body %}
+<h3>What is this?</h3>
+	<p>
+		Netflix used to have a friends feature where you could see your friends' movie ratings.  In early 2010 they removed this feature.
+		Well we're bringing it back, <i>with a vengeance</i>.
+		<ul>
+			<li>We make a backup of your Netflix ratings which you can download to your computer.</li>
+			<li>When you rate Netflix movies (using netflix.com, Roku, Nintendo Wii, iPhone, etc), they will show up here automatically.</li>
+			<li>We give you your own public webpage that lists your latest ratings and reviews.</li>
+			<li>By connecting your twitter and/or facebook accounts, we can easily find your friends here and they can find you.</li>
+			<li>You can see your friend's ratings even if you don't use Netflix.</li>
+            <li>You can see your friend's ratings even if you don't use Twitter or Facebook.  Go to your friend's profile page and click "Follow".</li>
+            <li>On the movie pages we show other useful information like the Metacritic score, Trailers, and Soundtracks.
+			<li>More fun stuff to come!</li>
+			<li>We do all this without asking for <i>any</i> personal info or passwords.  We don't even ask for your email!  (subscribe to the <a href="http://blog.friendsonnetflix.com">blog</a> to stay updated)</li>
+		</ul>
+	</p>
+<h3>Is there a way to see my friend's ratings when I'm on the Netflix website?</h3>
+<p>
+	Yep!  Install our browser extension for <a target="_blank" href="https://chrome.google.com/webstore/detail/lbifpngdcmkpdknooblfoaehpbiemebo">Google Chrome</a> or <a target="_blank" href="https://addons.mozilla.org/en-US/firefox/addon/friendsonnetflix/">Mozilla Firefox</a>.
+</p>
+<h3>It looks like you missed some of my ratings.  Why?</h3>
+<p>
+	Because of some limitations with the Netflix API, we might not be able to see some of your old ratings.  If we are waaay off, email support and we will take a look.
+</p>
+<h3>What about my reviews?</h3>
+<p>
+	Netflix <a target="_blank" href="http://blog.friendsonnetflix.com/netflix-is-removing-reviews-export-yours-whil">removed</a> the ability for us to import your reviews.  :(<br />(Soon you will be able to write reviews here, so your friends can read them)
+</p>
+<h3>Will you spam my Twitter or Facebook wall?</h3>
+<p>No.  We can auto-post your ratings if you want but it's optional, customizable, and we are smart about it so we won't flood your streams.</p>
+<h3>My question isn't answered here.  How do I contact you?</h3>
+<p>email support@friendsonnetflix.com</p>
+	{% endblock %}
+

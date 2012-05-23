@@ -1,0 +1,26 @@
+<html><head>
+		<style>
+			body{color:black; background:white;font: 11px/1.231 arial,helvetica,clean,sans-serif;}
+			.label{color: #555;}
+			.rating{font-weight: bold;margin-left:.3em;}
+			a{color:#00458b;text-decoration:none;}
+		</style>
+	</head>
+	<body>
+<div style="width:220px;text-align:center">
+	{% if not current_user %}
+	<span class="rating"><a target="_target" href="http://www.friendsonnetflix.com/auth">Sign-in to FriendsOnNetflix<br /> to see your friend's ratings!</a></span><br />
+	{% endif %}
+{% for rating in ratings if rating.user != current_user %}
+<span class="label"><a target="_target" href="/profile/{{ rating.user }}">{{ rating.user }}:</a></span>
+<span class="rating">
+	{% if rating.review %} <a href="?review={{rating.user.key().name()}}" target="_target">{{ rating.rating }} review </a>
+	{% else %} {{ rating.rating }} stars {% endif %}
+</span><br />
+{% endfor %}
+	{%if current_user and title.metacritic_rating %}<span class="label"><a href="http://www.metacritic.com/movie/{{title.slugify('-')}}" target="_target">Metacritic:</a></span>
+	<span class="rating">{{title.metacritic_rating}}{% endif %}</span><br />
+	<span class="label">{%if title %}<a target="_target" href="/title/{{title.slugify()}}/{{title.key().name().replace('http://api.netflix.com/catalog/titles/', '')}}">View FoN page</a>{%else%}Title not at FoN, yet.{% endif %}</span>
+</div>
+	</body>
+</html>

@@ -1,0 +1,43 @@
+{% if iscanvas %}
+	{% extends 'canvaslayout.html' %}
+{% else %}
+	{% extends 'layout.html' %}
+{% endif %}
+{% block title %}Title Lookup{% endblock %}
+{% block body %}
+
+<form method="get" action="{{ current_url }}" enctype="multipart/form-data" class="tipfy-form">
+    <ol>
+        <li><input type="text" name="q" value="{{titlename}}" class='medium'> <input class="submit" type="submit" value="Find"> (title must match exactly)</li>
+    </ol>        
+</form>
+
+<div id="topic-container">
+{% for title in titles %}
+<div class="listtopic">
+<div class="embed-mini">
+<a href="/title/{{title.slugify()}}/{{title.key().name().replace('http://api.netflix.com/catalog/titles/', '')}}" style="color:black">
+	<div class="url-embed-mini">
+		<img class="box-art" src="{{title.box_art}}" style="position: relative; top:-48px;">
+	</div>
+	</a>
+</div>
+
+<div class="title">
+<a href="/title/{{title.slugify()}}/{{title.key().name().replace('http://api.netflix.com/catalog/titles/', '')}}" style="color:black;text-decoration:underline;">
+{{ title.title }} ({{ title.release_year }})
+</a>
+</div>
+
+<div class="topicarea" style="color:#A9A9A9;">
+<div class="body" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-height:30px;width:640px;">{{ title.synopsis }}</div>
+</div>
+<div class="bodyfade"><img src="/static/content/images/fade.png" alt="" /></div>
+
+</div>
+<div class="bottomline"></div>
+
+{% endfor %}
+</div>
+
+{% endblock %}
